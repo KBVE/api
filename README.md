@@ -1,5 +1,5 @@
-# ayzur
-> Custom minecraft website for Ayzur
+# kbve-api
+> KBVE API
 
 ## Usage
 ```shell
