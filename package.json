@@ -9,7 +9,7 @@
     "url": "git@github.com:seanc/kbve-api.git"
   },
   "scripts": {
-    "test": "node test"
+    "start": "node server"
   },
   "private": true,
   "files": [
@@ -27,9 +27,8 @@
     "koa-router": "^5.4.0",
     "rc": "^1.1.6",
     "rethinkdb": "^2.3.2",
+    "thinky": "^2.3.4",
+    "thunks": "^4.4.3",
     "yup": "^0.20.0"
-  },
-  "scripts": {
-    "start": "node server"
   }
 }
