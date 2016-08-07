@@ -23,7 +23,6 @@
   "dependencies": {
     "koa": "^1.2.1",
     "koa-passport": "^1.3.1",
-    "koa-rethinkdb-pool": "^1.1.0",
     "koa-router": "^5.4.0",
     "rc": "^1.1.6",
     "rethinkdb": "^2.3.2",
