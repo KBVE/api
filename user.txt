@@ -1,0 +1,61 @@
+
+- username (ugh
+- userid (ugh
+- bcrypt_salt (ugh
+- email (user adds it, requirement)
+
+
+- personal_pgp_public_key (null, user adds it)
+- kbve_private_key (We generate this)
+- kbve_public_key (We generate this)
+
+
+- crypto_json 
+ - - bitcoin_address
+ - - ether_address
+ 
+- external_accounts
+ - - steamid
+ - - googleid
+ - - twitterid
+ - - minecraftuuid
+ 
+ 
+var thinky = require('thinky')();
+var type = thinky.type;
+ 
+
+var user_data = thinky.createModel("user_data", {
+    userid: type.string(),
+    username: type.string(), 
+    bcrypt_salt: type.string(),
+    email: type.string()
+});
+
+
+
+var user_data_crypto = thinky.createModel("user_data_crypto", {
+    userid: type.string(),
+    bitcoin_address: type.string(), 
+    bitcoin_balance: type.number(),
+    ether_address: type.string(),
+    ether_balance: type.number(),
+    kbve_address: type.string(),
+    kbve_balance: type.number()
+});
+
+
+
+
+var user_data_external = thinky.createModel("user_data_external", {
+    userid: type.string(),
+    steamid: type.string(), 
+    googleid: type.string(),
+    minecraftuuid: type.string(),
+    twitterid: type.string(),
+    githubid: type.string()
+});
+
+
+
+
