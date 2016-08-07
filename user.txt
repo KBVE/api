@@ -1,0 +1,21 @@
+
+- username (ugh
+- userid (ugh
+- bcrypt_salt (ugh
+- email (user adds it, requirement)
+
+
+- personal_pgp_public_key (null, user adds it)
+- kbve_private_key (We generate this)
+- kbve_public_key (We generate this)
+
+
+- crypto_json 
+ - - bitcoin_address
+ - - ether_address
+ 
+- external_accounts
+ - - steamid
+ - - googleid
+ - - twitterid
+ - - minecraftuuid
