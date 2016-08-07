@@ -1,20 +1,15 @@
-# kbve-api
-> KBVE API
-
-## Installation
-```shell
-$ npm install seanc/kbve-api
-```
+# ayzur
+> Custom minecraft website for Ayzur
 
 ## Usage
-```javascript
-import kbve-api from 'kbve-api';
+```shell
+$ npm start [-- --port=3000 --host=localhost]
 ```
+Example:
+```
+# development
+$ npm start
 
-## Credits
-| ![seanc][avatar] |
-|:---:|
-| [Sean Wilson][github] |
-
-  [avatar]: https://avatars.githubusercontent.com/u/13725538?v=3&s=125
-  [github]: https://github.com/seanc
+# specifying port or host to deploy
+$ npm start -- --port=80 --host='0.0.0.0'
+```
