@@ -3,6 +3,7 @@ const type = database.type;
 
 /* eslint-disable camelcase */
 module.exports = database.createModel("users", {
+  uuid: type.number(),
   username: type.string(),
   password: type.string(),
   email: type.string(),
