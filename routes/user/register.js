@@ -42,16 +42,13 @@ var register = function* register() {
     var salt = yield bcrypt.genSalt(10);
     var hash = yield bcrypt.hash(body.password, salt);
 
-    var user = new User({
-      username: body.username,
+    var user = new User(Object.assign(value, {
       password: hash,
-      email: body.email,
       steamid: '',
       googleid: '',
       mcuuid: '',
       twitterid: '',
       ghid: '',
-      pgp_public_key: body.pgp_public_key,
       kbve_mask_public: '',
       kbve_mask_private: '',
       bitcoin_address: '',
@@ -60,7 +57,7 @@ var register = function* register() {
       ether_balance: 0.00,
       kbve_address: '',
       kbve_balance: 0.00
-    });
+    }));
 
     try {
       var created = yield user.save();
