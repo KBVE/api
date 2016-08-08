@@ -3,9 +3,12 @@ const type = database.type;
 
 /* eslint-disable camelcase */
 module.exports = database.createModel("users", {
-  username: type.string(),
-  password: type.string(),
-  email: type.string(),
+  username: type.string().required(),
+  password: type.string().required(),
+  email: type.string().required(),
+  pgp_public: type.string(),
+  kbve_private_key: type.string(),
+  kbve_public_key: type.string(),
   steamid: type.string(),
   googleid: type.string(),
   mcuuid: type.string(),
