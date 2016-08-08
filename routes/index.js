@@ -1,3 +1,3 @@
 exports.app = require('./app');
 
-exports.user = {};
+exports.user = require('./user/register');

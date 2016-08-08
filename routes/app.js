@@ -1,4 +1,4 @@
-const User = require('../models/User');
+var User = require('../models/User');
 
 var app = function* app() {
   var test = new User({
