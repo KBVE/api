@@ -3,7 +3,7 @@ var User = require('../../models/User');
 var bcrypt = require('co-bcrypt');
 
 var schema = yup.object().shape({
-  username: yup.string().require()
+  username: yup.string().required()
 });
 
 var profile = function* profile() {
