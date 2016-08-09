@@ -30,8 +30,6 @@ var register = function* register() {
       return row('username').eq(username).or(row('email').eq(email));
     });
 
-    console.log(exists);
-
     if (exists.length > 0) {
       this.status = 409;
       this.body = {
