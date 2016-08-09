@@ -27,7 +27,8 @@ var register = function* register() {
     var exists = yield User.filter(function(row) {
       var email = body.email;
       var username = body.username;
-      return row('email').match(email) || row('username').match(username);
+      return row('email').match(`^${email}$`) ||
+             row('username').match(`^${username}$`);
     });
 
     if (exists.length > 0) {
