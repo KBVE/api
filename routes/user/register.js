@@ -25,11 +25,12 @@ var register = function* register() {
 
   if (value) {
     var exists = yield User.filter(function(row) {
-      var email = body.email;
-      var username = body.username;
-      return row('email').match(`^${email}$`) ||
-             row('username').match(`^${username}$`);
+      var email = value.email;
+      var username = value.username;
+      return row('username').eq(username).or(row('email').eq(email));
     });
+
+    console.log(exists);
 
     if (exists.length > 0) {
       this.status = 409;
