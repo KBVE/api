@@ -1,7 +1,6 @@
-const database = require('../database.js');
-const type = database.type;
+var database = require('../database.js');
+var type = database.type;
 
-/* eslint-disable camelcase */
 module.exports = database.createModel("users", {
   username: type.string().required(),
   password: type.string().required(),

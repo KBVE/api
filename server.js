@@ -1,16 +1,19 @@
-const koa = require('koa');
-const app = koa();
-const router = require('koa-router')();
-const parser = require('koa-bodyparser');
-const config = require('./config');
-const routes = require('./routes');
+var koa = require('koa');
+var app = koa();
+var router = require('koa-router')();
+var parser = require('koa-bodyparser')();
+var logger = require('koa-logger')();
+var config = require('./config');
+var routes = require('./routes');
 
-for (const name in routes) {
+for (var name in routes) {
   var route = routes[name];
+  console.log(route);
   router[route.method.toLowerCase() || 'get'](route.path, route);
 }
 
-app.use(parser());
+app.use(logger);
+app.use(parser);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
