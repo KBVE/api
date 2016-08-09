@@ -1,5 +1,5 @@
 module.exports = require('rc')('kbve', {
-  host: 'localhost',
+  host: '0.0.0.0',
   port: 3000,
   rethink: {
     host: 'localhost',
