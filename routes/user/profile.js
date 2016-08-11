@@ -22,15 +22,15 @@ var profile = function* profile() {
 
   if (value) {
     try {
-      var myResult;
       var data =  yield User.filter({username: value.username}).run()
       .then(function (result) {
-        myResult = result;
-        return myResult;
+        return result;
       });
-      delete data.password;
-      this.body = data;
-    } catch (e) {
+      this.body  = data.filter(function(item){
+                return item['password'] = 'token'
+        });
+    }
+   catch (e) {
       this.status = 409;
       this.body = {
         ok: false,
