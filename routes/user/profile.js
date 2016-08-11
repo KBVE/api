@@ -1,6 +1,5 @@
 var yup = require('yup');
 var User = require('../../models/User');
-var bcrypt = require('co-bcrypt');
 
 var schema = yup.object().shape({
   username: yup.string().required()
@@ -22,15 +21,12 @@ var profile = function* profile() {
 
   if (value) {
     try {
-      var data =  yield User.filter({username: value.username}).run()
-      .then(function (result) {
-        return result;
-      });
-      this.body  = data.filter(function(item){
-                return item['password'] = 'token'
-        });
-    }
-   catch (e) {
+      var data = yield User.filter({username: value.username});
+      var user = data[0];
+      delete user.password;
+
+      this.body = user;
+    } catch (e) {
       this.status = 409;
       this.body = {
         ok: false,
