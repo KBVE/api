@@ -1,4 +1,4 @@
 exports.app = require('./app');
 
-exports.user = require('./user/register');
-exports.profile = require('./user/profile');
+exports.userGet = require('./user/get');
+exports.userPost = require('./user/post');
