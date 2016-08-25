@@ -5,6 +5,7 @@ var parser = require('koa-bodyparser')();
 var logger = require('koa-logger')();
 var config = require('./config');
 var routes = require('./routes');
+var prune = require('./session-prune');
 
 for (var name in routes) {
   var route = routes[name];
@@ -19,6 +20,7 @@ app.use(router.allowedMethods());
 
 app.listen(config.port, config.host, function listen() {
   console.log(`Listening on ${config.host}:${config.port}`);
+  prune.cycle();
 });
 
 module.exports = app;

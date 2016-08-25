@@ -44,13 +44,7 @@ function* session() {
 
     try {
       yield sess.save();
-      this.body = {
-        ok: true,
-        data: {
-          token: token,
-          expires: exists[0].created
-        }
-      };
+      this.body = {ok: true, data: {token: token}};
     } catch (e) {
       this.status = 500;
       this.body = {ok: false, data: 'Internal Error'};
