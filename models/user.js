@@ -1,4 +1,4 @@
-var database = require('../database.js');
+var database = require('../database');
 var type = database.type;
 
 module.exports = database.createModel("users", {

@@ -1,5 +1,5 @@
 var yup = require('yup');
-var User = require('../../models/User');
+var User = require('../../models/user');
 
 var schema = yup.object().shape({
   username: yup.string().required()

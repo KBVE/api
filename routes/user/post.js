@@ -1,5 +1,5 @@
 var yup = require('yup');
-var User = require('../../models/User');
+var User = require('../../models/user');
 var bcrypt = require('co-bcrypt');
 
 var schema = yup.object().shape({
