@@ -57,7 +57,7 @@ function* userGet() {
     if (this.filter) {
       delete user.bitcoin_balance;
       delete user.ether_balance;
-      delete user.emai;
+      delete user.email;
       delete user.kbve_mask_private;
       delete user.kbve_balance;
     }
