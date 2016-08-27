@@ -1,5 +1,6 @@
 var yup = require('yup');
 var User = require('../../models/user');
+var auth = require('../../middleware/auth');
 
 var schema = yup.object().shape({
   username: yup.string().required()
@@ -7,6 +8,7 @@ var schema = yup.object().shape({
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
+userGet.middleware = auth;
 
 function* userGet() {
   var value = this.params;

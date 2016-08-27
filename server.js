@@ -7,10 +7,14 @@ var config = require('./config');
 var routes = require('./routes');
 var prune = require('./session-prune');
 
+function* pass(next) {
+  yield next;
+}
+
 for (var name in routes) {
   var route = routes[name];
-  console.log(route);
-  router[route.method.toLowerCase() || 'get'](route.path, route);
+  var middleware = route.middleware || pass;
+  router[route.method.toLowerCase() || 'get'](route.path, middleware, route);
 }
 
 app.use(logger);
