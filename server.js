@@ -14,7 +14,8 @@ function* pass(next) {
 for (var name in routes) {
   var route = routes[name];
   var middleware = route.middleware || pass;
-  router[route.method.toLowerCase() || 'get'](route.path, middleware, route);
+  var path = config.root + route.path;
+  router[route.method.toLowerCase() || 'get'](path, middleware, route);
 }
 
 app.use(logger);
