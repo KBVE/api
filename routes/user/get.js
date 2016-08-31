@@ -44,7 +44,9 @@ function* userGet() {
 
   // Fetch user info and send.
   try {
-    var data = yield User.filter(value);
+    var data = yield User.filter(function(row) {
+      return row('username').match(`(?i)^${value.username}$`);
+    });
     if (!data.length) {
       this.status = 404;
       this.body = {ok: false, data: 'User not found'};
