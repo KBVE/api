@@ -62,7 +62,7 @@ function* userPost() {
   try {
     var created = yield user.save();
     delete created.password;
-    this.body = created;
+    this.body = {ok: true, data: created};
   } catch (e) {
     this.status = 500;
     this.body = {ok: false, data: 'Internal Error'};
