@@ -64,7 +64,7 @@ function* userGet() {
       delete user.kbve_balance;
     }
 
-    this.body = user;
+    this.body = {ok: true, data: user};
   } catch (e) {
     this.status = 409;
     this.body = {ok: false, data: e.message};
