@@ -1,6 +1,6 @@
 var yup = require('yup');
 var User = require('../../models/user');
-var Session = require('../../models/session');
+// var Session = require('../../models/session');
 
 var schema = yup.object().shape({
   username: yup.string().required()
@@ -12,22 +12,22 @@ var authSchema = yup.object().shape({
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
-userGet.middleware = function* authorized(next) {
-  var value = this.request.headers;
-  this.filter = true;
-
-  try {
-    value = yield authSchema.validate(value);
-  } catch (e) {
-    this.filter = true;
-    yield next;
-  }
-
-  var exists = yield Session.filter({token: value['x-session-token']});
-
-  this.filter = exists.length < 1;
-  yield next;
-};
+// userGet.middleware = function* authorized(next) {
+//   var value = this.request.headers;
+//   this.filter = true;
+//
+//   try {
+//     value = yield authSchema.validate(value);
+//   } catch (e) {
+//     this.filter = true;
+//     yield next;
+//   }
+//
+//   var exists = yield Session.filter({token: value['x-session-token']});
+//
+//   this.filter = exists.length < 1;
+//   yield next;
+// };
 
 function* userGet() {
   var value = this.params;

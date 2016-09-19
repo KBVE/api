@@ -1,7 +1,7 @@
 var database = require('../database');
 var type = database.type;
 
-module.exports = database.createModel("item", {
+module.exports = database.createModel('item', {
   name: type.string().required(),
   location: type.string(),
   barcode: type.string(),

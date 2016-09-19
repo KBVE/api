@@ -1,7 +1,7 @@
 var database = require('../database');
 var type = database.type;
 
-module.exports = database.createModel("users", {
+module.exports = database.createModel('user', {
   username: type.string().required(),
   password: type.string().required(),
   email: type.string().required(),
