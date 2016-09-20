@@ -1,7 +1,7 @@
 exports.userGet = require('./user/get');
 exports.userPost = require('./user/post');
 
-exports.oauthRegister = require('./oauth/register');
+exports.token = require('./token');
 
 exports.storage = require('./app/marketplace/storage');
 exports.barcode = require('./app/marketplace/barcode');

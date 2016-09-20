@@ -1,16 +1,16 @@
-var Session = require('./models/session');
+const Session = require('./models/session');
 
-var TTL = 12; // in hours
-var CYCLE_TIME = 43200000; // 12 hours
+const TTL = 12; // in hours
+const CYCLE_TIME = 43200000; // 12 hours
 
-var prune = module.exports = function() {
-  var expire = new Date();
+const prune = module.exports = function() {
+  const expire = new Date();
   expire.setHours(expire.getHours() - TTL);
   return Session.filter(function(row) {
     return row('created').lt(expire);
   }).run().then(function(sessions) {
-    var capture = [];
-    for (var i = 0, max = sessions.length; i < max; i++) {
+    const capture = [];
+    for (const i = 0, max = sessions.length; i < max; i++) {
       capture.push(sessions[i].purge());
     }
     return Promise.all(capture);

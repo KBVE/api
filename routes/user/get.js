@@ -1,19 +1,19 @@
-var yup = require('yup');
-var User = require('../../models/user');
-// var Session = require('../../models/session');
+const yup = require('yup');
+const User = require('../../models/user');
+// const Session = require('../../models/session');
 
-var schema = yup.object().shape({
+const schema = yup.object().shape({
   username: yup.string().required()
 });
 
-var authSchema = yup.object().shape({
+const authSchema = yup.object().shape({
   'x-session-token': yup.string().required()
 });
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
 // userGet.middleware = function* authorized(next) {
-//   var value = this.request.headers;
+//   const value = this.request.headers;
 //   this.filter = true;
 //
 //   try {
@@ -23,15 +23,14 @@ userGet.path = '/user/:username';
 //     yield next;
 //   }
 //
-//   var exists = yield Session.filter({token: value['x-session-token']});
+//   const exists = yield Session.filter({token: value['x-session-token']});
 //
 //   this.filter = exists.length < 1;
 //   yield next;
 // };
 
 function* userGet() {
-  var value = this.params;
-  console.log(this.filter);
+  const value = this.params;
 
   // Validate request items
   try {
@@ -44,7 +43,7 @@ function* userGet() {
 
   // Fetch user info and send.
   try {
-    var data = yield User.filter(function(row) {
+    const data = yield User.filter(function(row) {
       return row('username').match(`(?i)^${value.username}$`);
     });
     if (!data.length) {
@@ -53,7 +52,7 @@ function* userGet() {
       return;
     }
 
-    var user = data[0];
+    const user = data[0];
     delete user.password;
 
     if (this.filter) {

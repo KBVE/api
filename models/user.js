@@ -1,5 +1,5 @@
-var database = require('../database');
-var type = database.type;
+const database = require('../database');
+const type = database.type;
 
 module.exports = database.createModel('user', {
   username: type.string().required(),

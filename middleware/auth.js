@@ -1,12 +1,12 @@
-// var Session = require('../models/session');
-// var yup = require('yup');
+// const Session = require('../models/session');
+// const yup = require('yup');
 //
-// var schema = yup.object().shape({
+// const schema = yup.object().shape({
 //   token: yup.string().required()
 // });
 //
 // module.exports = function* auth(next) {
-//   var value = (function(request) {
+//   const value = (function(request) {
 //     if (Object.keys(request.body).length === 0) {
 //       return request.query;
 //     }
@@ -22,7 +22,7 @@
 //     return;
 //   }
 //
-//   var exists = yield Session.filter({token: value.token});
+//   const exists = yield Session.filter({token: value.token});
 //
 //   if (exists.length < 1) {
 //     this.status = 403;
