@@ -1,26 +1,18 @@
-const yup = require('yup');
 const User = require('../../models/user');
 const bcrypt = require('co-bcrypt');
-
-const schema = yup.object().shape({
-  username: yup.string().required(),
-  password: yup.string().required(),
-  email: yup.string().email().required(),
-  pgp_public_key: yup.string()
-});
 
 userPost.method = 'post';
 userPost.path = '/user';
 
 function* userPost() {
   const value = this.request.body;
+  this.checkBody('username', 'Invalid username').isAlphanumeric();
+  this.checkBody('email', 'Invalid email address').isEmail();
 
   // Validate input
-  try {
-    value = yield schema.validate(value);
-  } catch (e) {
+  if (this.errors.length) {
     this.status = 400;
-    this.body = {ok: false, data: e.errors};
+    this.body = {ok: false, data: this.errors};
     return;
   }
 

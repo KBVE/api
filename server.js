@@ -22,21 +22,22 @@ for (const name in routes) {
   router[route.method.toLowerCase() || 'get'](path, middleware, route);
 }
 
-app.oauth = oauth({
+const auth = oauth({
  model: oauthStore,
- grants: ['password', 'refresh_token', 'authorization_code'],
+ grants: ['password'],
  debug: true
 });
 
 app.use(logger);
 app.use(parser);
 app.use(function* (next) {
-  this.validationErrors = [];
+  this.errors = [];
+  this.oauth = auth;
   yield next;
 });
 app.use(validate({
   onValidationError: function(err) {
-    this.validationErrors.push(err);
+    this.errors.push(err);
   }
 }));
 app.use(mount('/oauth', router.middleware()));

@@ -1,8 +1,9 @@
 token.method = 'all';
-token.path = '/token';
+token.path = '/oauth/token';
 
 function* token() {
-  this.oauth.grant();
+  console.log(this.oauth);
+  console.log(this.oauth.grant());
 };
 
 module.exports = token;
