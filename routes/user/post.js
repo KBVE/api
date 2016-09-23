@@ -1,18 +1,24 @@
 const User = require('../../models/user');
 const bcrypt = require('co-bcrypt');
+const joi = require('joi');
+
+const schema = joi.object().keys({
+  username: joi.string().alphanum().required(),
+  password: joi.string().required(),
+  email: joi.string().email().required()
+});
 
 userPost.method = 'post';
 userPost.path = '/user';
 
 function* userPost() {
   const value = this.request.body;
-  this.checkBody('username', 'Invalid username').isAlphanumeric();
-  this.checkBody('email', 'Invalid email address').isEmail();
 
-  // Validate input
-  if (this.errors.length) {
-    this.status = 400;
-    this.body = {ok: false, data: this.errors};
+  // Validate request body
+  const valid = joi.validate(value, schema);
+  if (valid.error) {
+    this.status = 409;
+    this.body = {ok: false, data: valid.error.details.map(err => err.message)};
     return;
   }
 

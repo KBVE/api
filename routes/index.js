@@ -1,7 +1,7 @@
 exports.userGet = require('./user/get');
 exports.userPost = require('./user/post');
 
-exports.token = require('./token');
+// exports.token = require('./token');
 exports.register = require('./register');
 
 exports.storage = require('./app/marketplace/storage');

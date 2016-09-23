@@ -2,10 +2,9 @@ const koa = require('koa');
 const app = koa();
 const router = require('koa-router')();
 const parser = require('koa-bodyparser')();
-const validate = require('koa-validator');
 const logger = require('koa-logger')();
 const mount = require('koa-mount');
-const oauth = require('koa-oauth-server');
+const oauth = require('koa-oauth-server-gowhich');
 const oauthStore = require('./oauth-store');
 const config = require('./config');
 const routes = require('./routes');
@@ -22,27 +21,23 @@ for (const name in routes) {
   router[route.method.toLowerCase() || 'get'](path, middleware, route);
 }
 
-const auth = oauth({
- model: oauthStore,
- grants: ['password'],
- debug: true
+app.oauth = oauth({
+  model: oauthStore,
+  grants: ['password', 'authorization_code', 'refresh_token'],
+  debug: true
 });
 
 app.use(logger);
 app.use(parser);
 app.use(function* (next) {
-  this.errors = [];
-  this.oauth = auth;
+  this.oauth = app.oauth;
   yield next;
 });
-app.use(validate({
-  onValidationError: function(err) {
-    this.errors.push(err);
-  }
-}));
-app.use(mount('/oauth', router.middleware()));
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+app.use(mount('/oauth', router.middleware()));
+router.post('/token', app.oauth.grant());
 
 app.listen(config.port, config.host, function listen() {
   console.log(`Listening on ${config.host}:${config.port}`);

@@ -1,14 +1,14 @@
-const yup = require('yup');
+const joi = require('joi');
 const User = require('../../models/user');
 // const Session = require('../../models/session');
 
-const schema = yup.object().shape({
-  username: yup.string().required()
+const schema = joi.object().keys({
+  username: joi.string().token().required()
 });
 
-const authSchema = yup.object().shape({
-  'x-session-token': yup.string().required()
-});
+// const authSchema = yup.object().shape({
+//   'x-session-token': yup.string().required()
+// });
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
@@ -33,11 +33,10 @@ function* userGet() {
   const value = this.params;
 
   // Validate request items
-  try {
-    yield schema.validate(value);
-  } catch (e) {
+  const valid = joi.validate(value, schema);
+  if (valid.error) {
     this.status = 409;
-    this.body = {ok: false, data: e.message};
+    this.body = {ok: false, data: valid.error.details.map(err => err.message)};
     return;
   }
 

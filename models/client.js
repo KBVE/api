@@ -4,7 +4,7 @@ const type = database.type;
 module.exports = database.createModel('client', {
   name: type.string().required(),
   website: type.string(),
-  redirect_uri: type.string().required(),
+  redirectUri: type.array().required(),
   clientId: type.string().required(),
   clientSecret: type.string().required()
 });
