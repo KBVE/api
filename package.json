@@ -33,6 +33,6 @@
     "randomstring": "^1.1.5",
     "rc": "^1.1.6",
     "rethinkdb": "^2.3.2",
-    "thinky": "^2.3.4",
+    "thinky": "^2.3.4"
   }
 }

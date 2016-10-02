@@ -1,33 +1,33 @@
 const joi = require('joi');
 const User = require('../../models/user');
-// const Session = require('../../models/session');
+const Session = require('../../models/session');
 
 const schema = joi.object().keys({
   username: joi.string().token().required()
 });
 
-// const authSchema = yup.object().shape({
-//   'x-session-token': yup.string().required()
-// });
+const authSchema = joi.object().keys({
+  'x-session-token': joi.string().required()
+});
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
-// userGet.middleware = function* authorized(next) {
-//   const value = this.request.headers;
-//   this.filter = true;
-//
-//   try {
-//     value = yield authSchema.validate(value);
-//   } catch (e) {
-//     this.filter = true;
-//     yield next;
-//   }
-//
-//   const exists = yield Session.filter({token: value['x-session-token']});
-//
-//   this.filter = exists.length < 1;
-//   yield next;
-// };
+userGet.middleware = function* authorized(next) {
+  const value = this.request.headers;
+  this.filter = true;
+
+  const valid = joi.validate(value, authSchema);
+  if (valid.error) {
+    this.filter = true;
+    yield next;
+    return;
+  }
+
+  const exists = yield Session.filter({token: value['x-session-token']});
+
+  this.filter = exists.length < 1;
+  yield next;
+};
 
 function* userGet() {
   const value = this.params;
