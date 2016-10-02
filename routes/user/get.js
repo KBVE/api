@@ -6,22 +6,13 @@ const schema = joi.object().keys({
   username: joi.string().token().required()
 });
 
-const authSchema = joi.object().keys({
-  'x-session-token': joi.string().required()
-});
-
 userGet.method = 'GET';
 userGet.path = '/user/:username';
 userGet.middleware = function* authorized(next) {
   const value = this.request.headers;
   this.filter = true;
 
-  const valid = joi.validate(value, authSchema);
-  if (valid.error) {
-    this.filter = true;
-    yield next;
-    return;
-  }
+  if (!value.hasOwnProperty('x-session-token')) yield next;
 
   const exists = yield Session.filter({token: value['x-session-token']});
 
