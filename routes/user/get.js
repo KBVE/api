@@ -1,50 +1,39 @@
-var yup = require('yup');
-var User = require('../../models/user');
-// var Session = require('../../models/session');
+const joi = require('joi');
+const User = require('../../models/user');
+const Session = require('../../models/session');
 
-var schema = yup.object().shape({
-  username: yup.string().required()
-});
-
-var authSchema = yup.object().shape({
-  'x-session-token': yup.string().required()
+const schema = joi.object().keys({
+  username: joi.string().token().required()
 });
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
-// userGet.middleware = function* authorized(next) {
-//   var value = this.request.headers;
-//   this.filter = true;
-//
-//   try {
-//     value = yield authSchema.validate(value);
-//   } catch (e) {
-//     this.filter = true;
-//     yield next;
-//   }
-//
-//   var exists = yield Session.filter({token: value['x-session-token']});
-//
-//   this.filter = exists.length < 1;
-//   yield next;
-// };
+userGet.middleware = function* authorized(next) {
+  const value = this.request.headers;
+  this.filter = true;
+
+  if (!value.hasOwnProperty('x-session-token')) yield next;
+
+  const exists = yield Session.filter({token: value['x-session-token']});
+
+  this.filter = exists.length < 1;
+  yield next;
+};
 
 function* userGet() {
-  var value = this.params;
-  console.log(this.filter);
+  const value = this.params;
 
   // Validate request items
-  try {
-    yield schema.validate(value);
-  } catch (e) {
+  const valid = joi.validate(value, schema);
+  if (valid.error) {
     this.status = 409;
-    this.body = {ok: false, data: e.message};
+    this.body = {ok: false, data: valid.error.details.map(err => err.message)};
     return;
   }
 
   // Fetch user info and send.
   try {
-    var data = yield User.filter(function(row) {
+    const data = yield User.filter(function(row) {
       return row('username').match(`(?i)^${value.username}$`);
     });
     if (!data.length) {
@@ -53,7 +42,7 @@ function* userGet() {
       return;
     }
 
-    var user = data[0];
+    const user = data[0];
     delete user.password;
 
     if (this.filter) {

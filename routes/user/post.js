@@ -1,33 +1,31 @@
-var yup = require('yup');
-var User = require('../../models/user');
-var bcrypt = require('co-bcrypt');
+const User = require('../../models/user');
+const bcrypt = require('co-bcrypt');
+const joi = require('joi');
 
-var schema = yup.object().shape({
-  username: yup.string().required(),
-  password: yup.string().required(),
-  email: yup.string().email().required(),
-  pgp_public_key: yup.string()
+const schema = joi.object().keys({
+  username: joi.string().alphanum().required(),
+  password: joi.string().required(),
+  email: joi.string().email().required()
 });
 
 userPost.method = 'post';
 userPost.path = '/user';
 
 function* userPost() {
-  var value = this.request.body;
+  const value = this.request.body;
 
-  // Validate input
-  try {
-    value = yield schema.validate(value);
-  } catch (e) {
-    this.status = 400;
-    this.body = {ok: false, data: e.errors};
+  // Validate request body
+  const valid = joi.validate(value, schema);
+  if (valid.error) {
+    this.status = 409;
+    this.body = {ok: false, data: valid.error.details.map(err => err.message)};
     return;
   }
 
   // Check if user exists.
-  var exists = yield User.filter(function(row) {
-    var email = value.email;
-    var username = value.username;
+  const exists = yield User.filter(function(row) {
+    const email = value.email;
+    const username = value.username;
     return row('username').eq(username).or(row('email').eq(email));
   });
   if (exists.length > 0) {
@@ -37,11 +35,11 @@ function* userPost() {
   }
 
   // Salt and hash password
-  var salt = yield bcrypt.genSalt(10);
-  var hash = yield bcrypt.hash(value.password, salt);
+  const salt = yield bcrypt.genSalt(10);
+  const hash = yield bcrypt.hash(value.password, salt);
 
   // Create user with default values.
-  var user = new User(Object.assign(value, {
+  const user = new User(Object.assign(value, {
     password: hash,
     steamid: '',
     googleid: '',
@@ -60,7 +58,7 @@ function* userPost() {
 
   // Try to save user.
   try {
-    var created = yield user.save();
+    const created = yield user.save();
     delete created.password;
     this.body = {ok: true, data: created};
   } catch (e) {
