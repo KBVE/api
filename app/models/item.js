@@ -20,3 +20,5 @@ module.exports = database.createModel('item', {
   data: type.string(),
   created: type.date().default(database.r.now())
 });
+
+// TODO: convert this to sequelize model
