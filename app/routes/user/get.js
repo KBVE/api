@@ -8,17 +8,19 @@ const schema = joi.object().keys({
 
 userGet.method = 'GET';
 userGet.path = '/user/:username';
-userGet.middleware = function* authorized(next) {
-  const value = this.request.headers;
-  this.filter = true;
+userGet.middlewares = [
+  function* authorized(next) {
+    const value = this.request.headers;
+    this.filter = true;
 
-  if (!value.hasOwnProperty('x-session-token')) yield next;
+    if (!value.hasOwnProperty('x-session-token')) yield next;
 
-  const exists = yield Session.filter({token: value['x-session-token']});
+    const exists = yield Session.findOne({ where: { token: value['x-session-token'] } });
 
-  this.filter = exists.length < 1;
-  yield next;
-};
+    this.filter = !!exists;
+    yield next;
+  }
+]
 
 function* userGet() {
   const value = this.params;
@@ -33,16 +35,14 @@ function* userGet() {
 
   // Fetch user info and send.
   try {
-    const data = yield User.filter(function(row) {
-      return row('username').match(`(?i)^${value.username}$`);
-    });
-    if (!data.length) {
+    const data = yield User.findOne({ where: { username: value.username } })
+    if (!data) {
       this.status = 404;
       this.body = {ok: false, data: 'User not found'};
       return;
     }
 
-    const user = data[0];
+    const user = data;
     delete user.password;
 
     if (this.filter) {

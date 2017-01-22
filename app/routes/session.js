@@ -23,10 +23,7 @@ function* session() {
     return;
   }
 
-  const exists = yield User.filter(function(row) {
-    const username = value.username;
-    return row('username').eq(username);
-  });
+  const exists = yield User.findOne({ where: { username: value.username } })
 
   if (exists.length < 1) {
     this.status = 400;
@@ -37,13 +34,11 @@ function* session() {
   if (yield bcrypt.compare(value.password, exists[0].password)) {
     const token = crypto.randomBytes(16).toString('hex');
 
-    const sess = new Session({
-      user_id: exists[0].id,
-      token: token
-    });
-
     try {
-      yield sess.save();
+      yield Session.create({
+        user_id: exists[0].id,
+        token: token
+      });
       this.body = {ok: true, data: {token: token}};
     } catch (e) {
       this.status = 500;

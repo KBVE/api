@@ -1,18 +1,14 @@
 const Session = require('../models/session');
-const yup = require('yup');
+const joi = require('joi');
 
-const schema = yup.object().shape({
-  token: yup.string().required()
+const schema = joi.object().keys({
+  token: joi.string().required()
 });
 
 module.exports = function* auth(next) {
-  const value = (function(request) {
-    if (Object.keys(request.body).length === 0) {
-      return request.query;
-    }
-
-    return request.body;
-  })(this.request);
+  const value = Object.keys(this.request).length
+    ? this.request.body
+    : this.request.query
 
   try {
     value = yield schema.validate(value);
