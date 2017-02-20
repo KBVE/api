@@ -1,10 +1,15 @@
-const database = require('../database');
-const type = database.type;
+const { sequelize, Sequelize } = require('../../lib/database')
 
-module.exports = database.createModel('aes_data', {
-  aes_data: type.string().required(),
-  burn: type.number().required(),
-  created: type.date().default(database.r.now())
-});
-
-// TODO: convert this to sequelize model
+module.exports = sequelize.define('aes_data', {
+  username: { type: Sequelize.STRING, allowNull: true },
+  aes_data: { type: Sequelize.STRING, allowNull: false },
+  burn: { type: Sequelize.STRING, allowNull: false },
+  createdAt: {
+    allowNull: false,
+    type: Sequelize.DATE
+  },
+  updatedAt: {
+    allowNull: false,
+    type: Sequelize.DATE
+  }
+}, { timestamps: true })
