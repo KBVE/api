@@ -24,27 +24,38 @@ function* session() {
   }
 
   const exists = yield User.findOne({ where: { username: value.username } })
-
-  if (exists.length < 1) {
+  console.log(exists)
+  if (!exists) {
     this.status = 400;
     this.body = {ok: false, data: 'User does not exist'};
     return;
   }
 
-  if (yield bcrypt.compare(value.password, exists[0].password)) {
+  console.log(exists.password)
+
+  if (yield bcrypt.compare(value.password, exists.password)) {
     const token = crypto.randomBytes(16).toString('hex');
 
     try {
-      yield Session.create({
-        user_id: exists[0].id,
-        token: token
+      const data = yield Session.create({
+        user_id: exists.id,
+        token
       });
-      this.body = {ok: true, data: {token: token}};
+      const session = data.toJSON()
+      session.expires = new Date(new Date(session.createdAt).getTime() + 60 * 60 * 24 * 1000).getTime()
+
+      delete session.id
+      delete session.createdAt
+      delete session.updatedAt
+
+      this.body = {ok: true, data: session };
     } catch (e) {
+      console.log(e)
       this.status = 500;
       this.body = {ok: false, data: 'Internal Error'};
     }
-    return;
+
+    return
   }
 
   this.status = 400;

@@ -12,7 +12,7 @@ module.exports = {
     queryInterface.createTable('sessions', {
       id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
       user_id: { type: Sequelize.STRING },
-      token: { type: Sequelize.STRING(16) },
+      token: { type: Sequelize.STRING(32) },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
