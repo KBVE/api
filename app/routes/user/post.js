@@ -22,15 +22,15 @@ function* userPost() {
     return;
   }
 
+  console.log(value.username)
+
   // Check if user exists.
   const exists = yield User.findAll({
     where: {
-      username: value.username,
-      $or: {
-        email: value.email
-      }
+      $or: [{ email: value.email }, { username: value.username }]
     }
   })
+  console.log(exists)
   if (exists.length > 0) {
     this.status = 409;
     this.body = {ok: false, data: 'Username or email already in use'};
@@ -43,9 +43,10 @@ function* userPost() {
 
   // Try to save user.
   try {
-    const created = yield User.create(value)
-    delete created.password;
-    this.body = {ok: true, data: created};
+    const created = yield User.create(Object.assign(value, { password: hash }))
+    const user = created.toJSON()
+    delete user.password;
+    this.body = {ok: true, data: user};
   } catch (e) {
     this.status = 500;
     this.body = {ok: false, data: 'Internal Error'};

@@ -35,7 +35,18 @@ function* userGet() {
 
   // Fetch user info and send.
   try {
-    const data = yield User.findOne({ where: { username: value.username } })
+    const exclude = this.filter ? [
+      'password',
+      'bitcoin_balance',
+      'email',
+      'ether_balance',
+      'kbve_mask_private',
+      'kbve_balance'
+    ] : ['password']
+    const data = yield User.findOne({
+      where: { username: value.username },
+      attributes: { exclude }
+    })
     if (!data) {
       this.status = 404;
       this.body = {ok: false, data: 'User not found'};
@@ -43,16 +54,6 @@ function* userGet() {
     }
 
     const user = data;
-    delete user.password;
-
-    if (this.filter) {
-      delete user.bitcoin_balance;
-      delete user.ether_balance;
-      delete user.email;
-      delete user.kbve_mask_private;
-      delete user.kbve_balance;
-    }
-
     this.body = {ok: true, data: user};
   } catch (e) {
     this.status = 409;
