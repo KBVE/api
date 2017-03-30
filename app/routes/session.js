@@ -24,14 +24,11 @@ function* session() {
   }
 
   const exists = yield User.findOne({ where: { username: value.username } })
-  console.log(exists)
   if (!exists) {
     this.status = 400;
     this.body = {ok: false, data: 'User does not exist'};
     return;
   }
-
-  console.log(exists.password)
 
   if (yield bcrypt.compare(value.password, exists.password)) {
     const token = crypto.randomBytes(16).toString('hex');
@@ -47,6 +44,8 @@ function* session() {
       delete session.id
       delete session.createdAt
       delete session.updatedAt
+
+      session.username = exists.username
 
       this.body = {ok: true, data: session };
     } catch (e) {
