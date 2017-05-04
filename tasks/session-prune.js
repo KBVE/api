@@ -15,7 +15,7 @@ const prune = module.exports = function() {
     }
   }).then(sessions => {
     const capture = [];
-    for (const i = 0, max = sessions.length; i < max; i++) {
+    for (let i = 0, max = sessions.length; i < max; i++) {
       capture.push(sessions[i].destroy());
     }
     return Promise.all(capture);
