@@ -1,11 +1,13 @@
 const User = require('../../models/user');
+const Invite = require('../../models/invite')
 const bcrypt = require('co-bcrypt');
 const joi = require('joi');
 
 const schema = joi.object().keys({
-  username: joi.string().alphanum().required(),
+  username: joi.string().alphanum(),
   password: joi.string().required(),
-  email: joi.string().email().required()
+  email: joi.string().email().required(),
+  invite: joi.string().alphanum()
 });
 
 userPost.method = 'post';
@@ -22,7 +24,38 @@ function* userPost() {
     return;
   }
 
-  console.log(value.username)
+  if (value.invite) {
+    const invite = yield Invite.findOne({ where: { invite_hash: value.invite } })
+
+    if (invite) {
+      if (invite.expire < new Date()) {
+        this.status = 410
+        this.body = { ok: false, data: 'Invite expired' }
+
+        return
+      }
+
+      value.username = invite.username
+    } else {
+      this.status = 400
+      this.body = { ok: false, data: 'Invite not found' }
+
+      return
+    }
+  }
+
+  // extra validation because required property is removed from validation schema
+  if (!value.username) {
+    this.status = 409
+    this.body = {
+      ok: false,
+      data: [
+        'username is required'
+      ]
+    }
+
+    return
+  }
 
   // Check if user exists.
   const exists = yield User.findAll({
@@ -30,7 +63,6 @@ function* userPost() {
       $or: [{ email: value.email }, { username: value.username }]
     }
   })
-  console.log(exists)
   if (exists.length > 0) {
     this.status = 409;
     this.body = {ok: false, data: 'Username or email already in use'};

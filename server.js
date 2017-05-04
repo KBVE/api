@@ -7,6 +7,7 @@ const config = require('./lib/config');
 const routes = require('./app/routes');
 const log = require('./lib/log')()
 const tasks = require('./lib/tasks')
+const throttler = require('request-throttler')
 
 function* pass(next) {
   yield next;
@@ -26,6 +27,27 @@ app.use(logger);
 app.use(parser);
 app.use(router.routes());
 app.use(router.allowedMethods());
+app.use(throttler.koa({
+  port: config.redis.port,
+  host: config.redis.host,
+  requestsPerSecond: 10,
+  timeToLive: 60,
+  throttler: function* () {
+    this.status = 503
+    this.body = {
+      ok: false,
+      data: 'You have been rate limited.'
+    }
+  },
+  error: function* (err) {
+    console.log(err)
+    this.status = 500
+    this.body = {
+      ok: false,
+      data: 'Internal Error'
+    }
+  }
+}))
 
 app.listen(config.port, config.host, function listen() {
   log.info(`Listening on ${config.host}:${config.port}`);

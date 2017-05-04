@@ -1,24 +1,28 @@
-const database = require('../database');
-const type = database.type;
+const { sequelize, Sequelize } = require('../../lib/database')
 
-module.exports = database.createModel('item', {
-  name: type.string().required(),
-  location: type.string(),
-  barcode: type.string(),
-  description: type.string().required(),
-  size: type.number(),
-  category: type.string(),
-  smartrating: type.number(),
-  bulk: type.string(),
-  discount: type.number(),
-  price: type.number(),
-  cost: type.number(),
-  wholesale: type.number(),
-  img_path: type.string(),
-  inventory: type.number(),
-  order_action: type.string(),
-  data: type.string(),
-  created: type.date().default(database.r.now())
-});
-
-// TODO: convert this to sequelize model
+module.exports = sequelize.define('item', {
+  name: { type: Sequelize.STRING },
+  location: { type: Sequelize.STRING },
+  barcode: { type: Sequelize.STRING, unique: true, primary: true },
+  description: { type: Sequelize.TEXT },
+  size: { type: Sequelize.INTEGER }, // what is this? dimensions?
+  category_id: { type: Sequelize.INTEGER },
+  smartrating: { type: Sequelize.FLOAT },
+  bulk: { type: Sequelize.BOOLEAN }, // what is this?
+  discount: { type: Sequelize.DOUBLE },
+  price: { type: Sequelize.DOUBLE },
+  // cost: { type: Sequelize.DOUBLE }, why?
+  wholesale: { type: Sequelize.DOUBLE },
+  img_path: { type: Sequelize.STRING },
+  inventory: { type: Sequelize.INTEGER },
+  order_action: { type: Sequelize.STRING },
+  data: { type: Sequelize.STRING }, // what is this?,
+  createdAt: {
+    allowNull: false,
+    type: Sequelize.DATE
+  },
+  updatedAt: {
+    allowNull: false,
+    type: Sequelize.DATE
+  }
+}, { timestamps: true, paranoid: true })
