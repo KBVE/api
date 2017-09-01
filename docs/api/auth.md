@@ -2,6 +2,8 @@
 Authenticating API users is done by generating a token and providing that token in all future requests that require it.
 
 PATH: /session
+
+
 METHOD: POST
 
 #### Fields

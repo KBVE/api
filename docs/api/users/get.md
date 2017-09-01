@@ -3,6 +3,8 @@
 By default you can view basic user information publicly on the API. For more detailed information like private credentials you must pass a session token in as part of your request payload through `x-session-token` (case insensitive) header.
 
 PATH: /users/:username
+
+
 METHOD: GET
 
 #### Fields
