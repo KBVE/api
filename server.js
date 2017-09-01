@@ -8,6 +8,8 @@ const routes = require('./app/routes');
 const log = require('./lib/log')()
 const tasks = require('./lib/tasks')
 const throttler = require('request-throttler')
+const bugsnag = require('./lib/bugsnag')
+
 
 function* pass(next) {
   yield next;
@@ -41,6 +43,13 @@ app.use(throttler.koa({
   },
   error: function* (err) {
     console.log(err)
+
+    bugsnag.notify(err, {
+      subsystem: {
+        name: 'throttler'
+      }
+    })
+
     this.status = 500
     this.body = {
       ok: false,
@@ -49,9 +58,16 @@ app.use(throttler.koa({
   }
 }))
 
+app.on('error', bugsnag.koaHandler)
+
 app.listen(config.port, config.host, function listen() {
   log.info(`Listening on ${config.host}:${config.port}`);
   tasks.run()
  });
+
+ process.on('unhandledRejection', err => {
+   console.log(err)
+   bugsnag.notify(err)
+ })
 
 module.exports = app;

@@ -1,9 +1,9 @@
-
 const joi = require('joi');
 const User = require('../models/user');
 const Session = require('../models/session');
 const bcrypt = require('co-bcrypt');
 const crypto = require('crypto');
+const bugsnag = require('../../lib/bugsnag')
 
 const schema = joi.object().keys({
   username: joi.string().alphanum().required(),
@@ -26,7 +26,7 @@ function* session() {
   const exists = yield User.findOne({ where: { username: value.username } })
   if (!exists) {
     this.status = 400;
-    this.body = {ok: false, data: 'User does not exist'};
+    this.body = {ok: false, data: ['User does not exist']};
     return;
   }
 
@@ -39,7 +39,6 @@ function* session() {
         token
       });
       const session = data.toJSON()
-      session.expires = new Date(new Date(session.createdAt).getTime() + 60 * 60 * 24 * 1000).getTime()
 
       delete session.id
       delete session.createdAt
@@ -50,15 +49,16 @@ function* session() {
       this.body = {ok: true, data: session };
     } catch (e) {
       console.log(e)
+      bugsnag.notify(e)
       this.status = 500;
-      this.body = {ok: false, data: 'Internal Error'};
+      this.body = {ok: false, data: ['Internal Error']};
     }
 
     return
   }
 
   this.status = 400;
-  this.body = {ok: false, data: 'Incorrect username or password'};
+  this.body = {ok: false, data: ['Incorrect username or password']};
 }
 
 module.exports = session;

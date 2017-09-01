@@ -1,6 +1,7 @@
 exports.user = [
   require('./user/get'),
-  require('./user/post')
+  require('./user/create'),
+  require('./user/change-password')
 ]
 
 exports.session = require('./session');

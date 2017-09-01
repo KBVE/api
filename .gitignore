@@ -3,3 +3,5 @@ node_modules
 rethinkdb_data
 kbve_api
 *.log
+config.json
+!storage/config.json
