@@ -3,6 +3,8 @@
 Changing user passwords will forcibly delete all existing session tokens created for that user and you will need to generate a new one.
 
 PATH: /user/change-password
+
+
 METHOD: POST
 
 #### Fields

@@ -1,0 +1,10 @@
+{
+  "host": "localhost",
+  "port": 3000,
+  "path": "",
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379
+  },
+  "bugsnag": "334e1250b2877f21af73ffaa7744e21f"
+}
