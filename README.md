@@ -15,5 +15,5 @@ $ npm start -- --port=80 --host='0.0.0.0'
 ```
 
 ## Documentation
-[Documentation](docs/README.md)
-[API Documentation](docs/api.md)
+- [Documentation](docs/README.md)
+- [API Documentation](docs/api.md)
