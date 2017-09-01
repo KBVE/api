@@ -1,16 +1,26 @@
 const joi = require('joi');
 const User = require('../../models/user');
 const Session = require('../../models/session');
+const bugsnag = require('../../../lib/bugsnag')
 
 const schema = joi.object().keys({
   username: joi.string().token().required()
 });
 
-userGet.method = 'GET';
-userGet.path = '/user/:username';
-userGet.middlewares = [
+get.method = 'GET';
+get.path = '/user/:username';
+get.middlewares = [
   function* authorized(next) {
-    const value = this.request.headers;
+    const headers = this.request.headers;
+    const value = Object.keys(headers).reduce((acc, curr) => {
+      const key = curr.toLowerCase()
+      const value = headers[curr]
+
+      acc[key] = value
+
+      return acc
+    }, {})
+
     this.filter = true;
 
     if (!value.hasOwnProperty('x-session-token')) yield next;
@@ -22,7 +32,7 @@ userGet.middlewares = [
   }
 ]
 
-function* userGet() {
+function* get () {
   const value = this.params;
 
   // Validate request items
@@ -39,7 +49,6 @@ function* userGet() {
       'password',
       'bitcoin_balance',
       'email',
-      'ether_balance',
       'kbve_mask_private',
       'kbve_balance'
     ] : ['password']
@@ -49,17 +58,18 @@ function* userGet() {
     })
     if (!data) {
       this.status = 404;
-      this.body = {ok: false, data: 'User not found'};
+      this.body = {ok: false, data: ['User not found']};
       return;
     }
 
     const user = data;
     this.body = {ok: true, data: user};
   } catch (e) {
+    bugsnag.notify(e)
     this.status = 409;
     this.body = {ok: false, data: e.message};
     return;
   }
 }
 
-module.exports = userGet;
+module.exports = get;

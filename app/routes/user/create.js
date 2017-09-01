@@ -2,6 +2,7 @@ const User = require('../../models/user');
 const Invite = require('../../models/invite')
 const bcrypt = require('co-bcrypt');
 const joi = require('joi');
+const bugsnag = require('../../../lib/bugsnag')
 
 const schema = joi.object().keys({
   username: joi.string().alphanum(),
@@ -10,10 +11,10 @@ const schema = joi.object().keys({
   invite: joi.string().alphanum()
 });
 
-userPost.method = 'post';
-userPost.path = '/user';
+create.method = 'post';
+create.path = '/user';
 
-function* userPost() {
+function* create () {
   const value = this.request.body;
 
   // Validate request body
@@ -30,7 +31,7 @@ function* userPost() {
     if (invite) {
       if (invite.expire < new Date()) {
         this.status = 410
-        this.body = { ok: false, data: 'Invite expired' }
+        this.body = { ok: false, data: ['Invite expired' ]}
 
         return
       }
@@ -38,7 +39,7 @@ function* userPost() {
       value.username = invite.username
     } else {
       this.status = 400
-      this.body = { ok: false, data: 'Invite not found' }
+      this.body = { ok: false, data: ['Invite not found'] }
 
       return
     }
@@ -65,7 +66,7 @@ function* userPost() {
   })
   if (exists.length > 0) {
     this.status = 409;
-    this.body = {ok: false, data: 'Username or email already in use'};
+    this.body = {ok: false, data: ['Username or email already in use']};
     return;
   }
 
@@ -80,10 +81,11 @@ function* userPost() {
     delete user.password;
     this.body = {ok: true, data: user};
   } catch (e) {
+    bugsnag.notify(e)
     this.status = 500;
-    this.body = {ok: false, data: 'Internal Error'};
+    this.body = {ok: false, data: ['Internal Error']};
     return;
   }
 }
 
-module.exports = userPost;
+module.exports = create;
